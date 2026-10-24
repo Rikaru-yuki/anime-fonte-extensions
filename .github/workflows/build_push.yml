@@ -66,7 +66,7 @@ jobs:
 
         # If any changes to lib/ caused on main branch, bump the extensions that use the modified lib.
       - name: Bump extensions that use a modified lib
-        if: steps.modified-libs.outputs.any_changed == 'true' && github.repository == 'Awerkori/anime-fonte-extensoes'
+        if: steps.modified-libs.outputs.any_changed == 'true' && github.repository == 'Rikaru-yuki/anime-fonte-extensions'
         env:
           COMMIT_MESSAGE: ${{ steps.set-env.outputs.LATEST_COMMIT_MESSAGE }}
         run: |
@@ -134,7 +134,7 @@ jobs:
 
       - name: Upload APKs (${{ matrix.chunk.number }})
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: github.repository == 'Awerkori/anime-fonte-extensoes'
+        if: github.repository == 'Rikaru-yuki/anime-fonte-extensions'
         with:
           name: "individual-apks-${{ matrix.chunk.number }}"
           path: "**/*.apk"
@@ -146,7 +146,7 @@ jobs:
   publish:
     name: Publish extension repo
     needs: [prepare, build]
-    if: ${{ always() && needs.prepare.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') && github.repository == 'Awerkori/anime-fonte-extensoes' }}
+    if: ${{ always() && needs.prepare.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') && github.repository == 'Rikaru-yuki/anime-fonte-extensions' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -177,7 +177,7 @@ jobs:
           if [ -n "$(find repo/apk -name '*.apk' -print -quit)" ]; then
             INSPECTOR_LINK="$(curl -s "https://api.github.com/repos/komikku-app/aniyomi-extensions-inspector/releases/latest" | jq -r '.assets[0].browser_download_url')"
             curl -L "$INSPECTOR_LINK" -o ./Inspector.jar
-            java -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
+            java -XX:+UnlockDiagnosticVMOptions -XX:-BytecodeVerificationRemote -jar ./Inspector.jar "repo/apk" "output.json" "tmp"
           else
             echo '{}' > output.json
           fi
@@ -186,7 +186,7 @@ jobs:
       - name: Checkout repo branch
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          repository: Awerkori/anime-extensoes
+          repository: Rikaru-yuki/anime-extensoes
           token: ${{ secrets.BOT_PAT }}
           ref: repo
           path: repo
@@ -196,7 +196,7 @@ jobs:
       - name: Validate Bootstrap Guard
         id: bootstrap-guard
         run: |
-          NOX_FINGERPRINT="144f44e865cbfae6bde110489ef7ec142f0b1681f627a093a218650e21db5dad"
+          NOX_FINGERPRINT="55a92af7c488b5cc88a9931f50aa2a98d28638024e2b258a508192698545d663"
           CURRENT_FINGERPRINT="$(jq -r '.meta.signingKeyFingerprint // empty' repo/repo.json 2>/dev/null || echo '')"
           echo "Current repo fingerprint: $CURRENT_FINGERPRINT"
           echo "Nox official fingerprint: $NOX_FINGERPRINT"
