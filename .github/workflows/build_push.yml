@@ -196,7 +196,7 @@ jobs:
       - name: Validate Bootstrap Guard
         id: bootstrap-guard
         run: |
-          NOX_FINGERPRINT="144f44e865cbfae6bde110489ef7ec142f0b1681f627a093a218650e21db5dad"
+          NOX_FINGERPRINT="55a92af7c488b5cc88a9931f50aa2a98d28638024e2b258a508192698545d663"
           CURRENT_FINGERPRINT="$(jq -r '.meta.signingKeyFingerprint // empty' repo/repo.json 2>/dev/null || echo '')"
           echo "Current repo fingerprint: $CURRENT_FINGERPRINT"
           echo "Nox official fingerprint: $NOX_FINGERPRINT"
